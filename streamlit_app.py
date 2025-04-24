@@ -12,3 +12,5 @@ st.set_page_config(page_title="Streamlit dashboard",layout="wide")
 
 st.title("Education indicators for Sri Lanka ")
 uploaded_file = st.file_uploader("C:/Users/Asus/Downloads/education indicators.csv", type=["csv","xlsx"])
+
+st.sidebar.header("Choose filters")
