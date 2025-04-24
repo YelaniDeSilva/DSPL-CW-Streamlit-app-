@@ -6,3 +6,8 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 import seaborn as sns  
+import plotly.express as px
+
+st.set_page_config(page_title="Streamlit dashboard",layout="wide")
+
+st.title("Education indicators for Sri Lanka ")
