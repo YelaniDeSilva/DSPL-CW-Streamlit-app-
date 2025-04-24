@@ -11,6 +11,14 @@ import plotly.express as px
 st.set_page_config(page_title="Streamlit dashboard",layout="wide")
 
 st.title("Education indicators for Sri Lanka ")
-uploaded_file = st.file_uploader("C:/Users/Asus/Downloads/education indicators.csv", type=["csv","xlsx"])
+
+df= pd.read_csv("education indicators.csv")
 
 st.sidebar.header("Choose filters")
+# Create for Age range 
+age_range = st.sidebar.multiselect("Select an age range", df["Age range "].unique())
+if not age_range:
+    df2 = df.copy()
+else:
+    df2 = df[df["Age range "].isin(age_range)]
+    
