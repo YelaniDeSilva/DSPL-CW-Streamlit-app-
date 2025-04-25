@@ -21,4 +21,11 @@ if not age_range:
     df2 = df.copy()
 else:
     df2 = df[df["Age range "].isin(age_range)]
+
+#Create for year
+year = st.sidebar.multiselect("Select year", df2["Year"].unique())
+if not year:
+    df3 = df2.copy()
+else:
+    df3 = df2[df2["Year"].isin(year)]
     
