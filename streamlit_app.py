@@ -51,6 +51,7 @@ elif indicators:
 else:
     filtered_df = df3[df3["Age range "].isin(age_range) & df3["Year"].isin(year) & df3["Indicator "].isin(indicators)]
 
+#creating columns and a container
 container1 = st.container()
 col1, col2 = st.columns(2)
 
