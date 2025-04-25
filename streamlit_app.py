@@ -191,6 +191,52 @@ with col2:
 
     st.plotly_chart(pie_fig, use_container_width=True , key="Age range average" )
     
+#creating columns and a container
+container2 = st.container()
+col3, col4 = st.columns(2)
+
+with col3:
+    st.subheader("Average values by year")
+
+    # # Grouping by year and calculating the average percentage values
+    avg_by_year = filtered_df.groupby("Year")["Value"].mean().reset_index()
+    avg_by_year = avg_by_year.sort_values(by="Year")  # Sort years just in case
+
+    # Plotting the line chart
+    line_fig = go.Figure()
+
+    line_fig.add_trace(go.Scatter(
+        x=avg_by_year["Year"],
+        y=avg_by_year["Value"],
+        mode='lines+markers',
+        line=dict(color='lightskyblue', width=2),
+        marker=dict(size=6),
+        name="Average %"
+    ))
+
+    line_fig.update_layout(
+        height=400,
+        paper_bgcolor='#0e1117',
+        plot_bgcolor='#0e1117',
+        font=dict(color='white', size=13),
+        margin=dict(t=40, b=40, l=40, r=40),
+        xaxis=dict(
+            title="Year",
+            showgrid=False,
+            tickmode='array',
+            tickvals=avg_by_year["Year"],  
+        ),
+        yaxis=dict(
+            title="Average Percentage Value",
+            showgrid=True,
+            gridcolor='gray'
+        ),
+        showlegend=False
+    )
+
+    st.plotly_chart(line_fig, use_container_width=True, key="line_chart_by_year")
+
+
 
 
 
