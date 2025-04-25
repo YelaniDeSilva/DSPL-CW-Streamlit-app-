@@ -55,5 +55,11 @@ else:
 container1 = st.container()
 col1, col2 = st.columns(2)
 
+avg_by_code = df.groupby("Indicator ")["Value"].mean().reset_index()
+avg_by_code = avg_by_code.sort_values(by="Value", ascending=False)
+
+
+
+
 
     
