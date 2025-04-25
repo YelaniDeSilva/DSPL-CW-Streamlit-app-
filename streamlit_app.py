@@ -125,3 +125,74 @@ with col1:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+with col2:
+    st.subheader("Average values by age range")
+
+    # Group by age range and calculate average percentage
+    avg_by_age = filtered_df.groupby("Age range ")["Value"].mean().reset_index()
+    avg_by_age = avg_by_age.sort_values(by="Value", ascending=False)
+
+    # Manual color mapping for age ranges
+    age_color_mapping = {
+        "15-19": "indianred",
+        "20-24": "darkseagreen",
+        "25-29": "lightskyblue",
+        "30-34": "mediumorchid",
+        "35-39": "yellow",
+        "40-44": "royalblue",
+        "45-49": "olivedrab"
+    }
+    
+    # Assign colors from mapping (fallback to lightgray if missing)
+    avg_by_age["Color"] = avg_by_age["Age range "].map(age_color_mapping).fillna("lightgray")
+
+    import plotly.graph_objects as go
+
+    # Create the actual pie chart (no legend items from here)
+    pie_fig = go.Figure()
+
+    pie_fig.add_trace(go.Pie(
+        labels=avg_by_age["Age range "],
+        values=avg_by_age["Value"],
+        marker=dict(colors=avg_by_age["Color"]),
+        textinfo='percent+label',
+        insidetextorientation='radial',
+        showlegend=False  # We'll build our own legend manually
+    ))
+
+    # Add manual legend (dummy traces for each age range)
+    for idx, row in avg_by_age.iterrows():
+        pie_fig.add_trace(go.Bar(
+            x=[None], y=[None],
+            marker=dict(color=row["Color"]),
+            name=row["Age range "],
+            showlegend=True
+        ))
+
+    # Layout customization
+    pie_fig.update_layout(
+        height=320,
+        paper_bgcolor='#0e1117',
+        plot_bgcolor='#0e1117',
+        font=dict(color='white', size=13),
+        margin=dict(t=40, b=40, l=40, r=40),
+        legend=dict(
+            orientation="v",
+            yanchor="top",
+            y=1,
+            xanchor="right",
+            x=1,
+            bgcolor='#0e1117',
+            bordercolor='white',
+            borderwidth=1,
+            font=dict(color='white')
+        ),
+        showlegend=True
+    )
+
+    st.plotly_chart(pie_fig, use_container_width=True , key="Age range average" )
+    
+
+
+
