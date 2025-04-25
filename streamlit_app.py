@@ -7,6 +7,7 @@ import warnings
 warnings.filterwarnings('ignore')
 import seaborn as sns  
 import plotly.express as px
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="Streamlit dashboard",layout="wide")
 
@@ -55,11 +56,72 @@ else:
 container1 = st.container()
 col1, col2 = st.columns(2)
 
-avg_by_code = df.groupby("Indicator ")["Value"].mean().reset_index()
-avg_by_code = avg_by_code.sort_values(by="Value", ascending=False)
+with col1:
+    
+    color_mapping = {
+        "SEC.CMPT": 'indianred',      
+        "PRM.CMPT": 'darkseagreen',      
+        "NOED": 'lightskyblue',       
+        "TER.CMPT": 'mediumorchid'     
+    }
 
+    # Labels for legend 
+    legend_label_mapping = {
+        "SEC.CMPT": "Secondary education",
+        "PRM.CMPT": "Primary education",
+        "NOED": "No education",
+        "TER.CMPT": "Tertiary education"
+    }
+    #Averages 
+    avg_by_code = filtered_df.groupby("Indicator Code")["Value"].mean().reset_index()
+    avg_by_code = avg_by_code.sort_values(by="Value", ascending=False)
 
+    st.subheader("Average values by indicator code")
 
+    avg_by_code["Color"] = avg_by_code["Indicator Code"].map(color_mapping).fillna('lightgray')
 
+    # Creating the plot 
+    fig = go.Figure()
 
     
+    fig.add_trace(go.Bar(
+        x=avg_by_code["Indicator Code"],
+        y=avg_by_code["Value"],
+        marker_color=avg_by_code["Color"],
+        showlegend=False,
+        width=0.4
+    ))
+
+    
+    for code, color in color_mapping.items():
+        fig.add_trace(go.Bar(
+            x=[None], y=[None], 
+            marker=dict(color=color),
+            name=legend_label_mapping.get(code, code),
+            showlegend=True
+        ))
+
+    # Choosing the appropriate layout 
+    fig.update_layout(
+        height=400,
+        plot_bgcolor='#0e1117',
+        paper_bgcolor='#0e1117',
+        font=dict(color='white', size=13),
+        xaxis=dict(title="Indicator Code", tickangle=45),
+        yaxis=dict(title="Average Percentage Value"),
+        margin=dict(t=40, b=40, l=40, r=40),
+        legend=dict(
+            orientation="v",
+            yanchor="top",
+            y=1,
+            xanchor="right",
+            x=1,
+            bgcolor='#0e1117',
+            bordercolor='white',
+            borderwidth=1,
+            font=dict(color='white')
+        ),
+        showlegend=True
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
