@@ -31,4 +31,24 @@ else:
 
 #Create for indicators 
 indicators = st.sidebar.multiselect("Pick an indicator",df3["Indicator "].unique())
+
+# Filter the data based on age range, year and indicators
+
+if not age_range and not year and not indicators:
+    filtered_df = df
+elif not year and not indicators:
+    filtered_df = df[df["Age range "].isin(age_range)]
+elif not age_range and not indicators:
+    filtered_df = df[df["Year"].isin(year)]
+elif year and indicators:
+    filtered_df = df3[df["Year"].isin(year) & df3["Indicator "].isin(indicators)]
+elif age_range and indicators:
+    filtered_df = df3[df["Age range "].isin(age_range) & df3["Indicator "].isin(indicators)]
+elif age_range and year:
+    filtered_df = df3[df["Age range "].isin(age_range) & df3["Year"].isin(year)]
+elif indicators:
+    filtered_df = df3[df3["Indicator "].isin(indicators)]
+else:
+    filtered_df = df3[df3["Age range "].isin(age_range) & df3["Year"].isin(year) & df3["Indicator "].isin(indicators)]
+
     
