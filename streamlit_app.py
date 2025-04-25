@@ -129,27 +129,26 @@ with col1:
 with col2:
     st.subheader("Average values by age range")
 
-    # Group by age range and calculate average percentage
+    # Grouping by age range and calculating the average percentage values 
     avg_by_age = filtered_df.groupby("Age range ")["Value"].mean().reset_index()
     avg_by_age = avg_by_age.sort_values(by="Value", ascending=False)
 
-    # Manual color mapping for age ranges
+ 
     age_color_mapping = {
         "15-19": "indianred",
-        "20-24": "darkseagreen",
-        "25-29": "lightskyblue",
+        "20-24": "forestgreen",
+        "25-29": "blueviolet",
         "30-34": "mediumorchid",
         "35-39": "yellow",
         "40-44": "royalblue",
         "45-49": "olivedrab"
     }
     
-    # Assign colors from mapping (fallback to lightgray if missing)
     avg_by_age["Color"] = avg_by_age["Age range "].map(age_color_mapping).fillna("lightgray")
 
     import plotly.graph_objects as go
 
-    # Create the actual pie chart (no legend items from here)
+    # Create the pie chart 
     pie_fig = go.Figure()
 
     pie_fig.add_trace(go.Pie(
@@ -158,10 +157,9 @@ with col2:
         marker=dict(colors=avg_by_age["Color"]),
         textinfo='percent+label',
         insidetextorientation='radial',
-        showlegend=False  # We'll build our own legend manually
+        showlegend=False  
     ))
 
-    # Add manual legend (dummy traces for each age range)
     for idx, row in avg_by_age.iterrows():
         pie_fig.add_trace(go.Bar(
             x=[None], y=[None],
