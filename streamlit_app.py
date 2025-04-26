@@ -56,8 +56,14 @@ else:
 container1 = st.container()
 col1, col2 = st.columns(2)
 
+import streamlit as st
+import plotly.graph_objects as go
+
+# Create columns and container
+container1 = st.container()
+col1, col2 = st.columns(2)
+
 with col1:
-    
     color_mapping = {
         "SEC.CMPT": 'indianred',      
         "PRM.CMPT": 'darkseagreen',      
@@ -65,14 +71,13 @@ with col1:
         "TER.CMPT": 'mediumorchid'     
     }
 
-    # Labels for legend 
     legend_label_mapping = {
         "SEC.CMPT": "Secondary education",
         "PRM.CMPT": "Primary education",
         "NOED": "No education",
         "TER.CMPT": "Tertiary education"
     }
-    #Averages 
+
     avg_by_code = filtered_df.groupby("Indicator Code")["Value"].mean().reset_index()
     avg_by_code = avg_by_code.sort_values(by="Value", ascending=False)
 
@@ -80,10 +85,8 @@ with col1:
 
     avg_by_code["Color"] = avg_by_code["Indicator Code"].map(color_mapping).fillna('lightgray')
 
-    # Creating the plot 
     fig = go.Figure()
 
-    
     fig.add_trace(go.Bar(
         x=avg_by_code["Indicator Code"],
         y=avg_by_code["Value"],
@@ -92,34 +95,27 @@ with col1:
         width=0.4
     ))
 
-    
     for code, color in color_mapping.items():
         fig.add_trace(go.Bar(
-            x=[None], y=[None], 
+            x=[None], y=[None],
             marker=dict(color=color),
             name=legend_label_mapping.get(code, code),
             showlegend=True
         ))
 
-    # Choosing the appropriate layout 
     fig.update_layout(
         height=400,
-        plot_bgcolor='#0e1117',
-        paper_bgcolor='#0e1117',
-        font=dict(color='white', size=13),
+        font=dict(size=13),
+        margin=dict(t=40, b=40, l=40, r=40),
         xaxis=dict(title="Indicator Code", tickangle=45),
         yaxis=dict(title="Average Percentage Value"),
-        margin=dict(t=40, b=40, l=40, r=40),
         legend=dict(
             orientation="v",
             yanchor="top",
             y=1,
             xanchor="right",
             x=1,
-            bgcolor='#0e1117',
-            bordercolor='white',
-            borderwidth=1,
-            font=dict(color='white')
+            borderwidth=1
         ),
         showlegend=True
     )
@@ -129,11 +125,9 @@ with col1:
 with col2:
     st.subheader("Average values by age range")
 
-    # Grouping by age range and calculating the average percentage values 
     avg_by_age = filtered_df.groupby("Age range ")["Value"].mean().reset_index()
     avg_by_age = avg_by_age.sort_values(by="Value", ascending=False)
 
- 
     age_color_mapping = {
         "15-19": "indianred",
         "20-24": "forestgreen",
@@ -143,10 +137,9 @@ with col2:
         "40-44": "royalblue",
         "45-49": "olivedrab"
     }
-    
+
     avg_by_age["Color"] = avg_by_age["Age range "].map(age_color_mapping).fillna("lightgray")
 
-    # Create the pie chart 
     pie_fig = go.Figure()
 
     pie_fig.add_trace(go.Pie(
@@ -155,7 +148,7 @@ with col2:
         marker=dict(colors=avg_by_age["Color"]),
         textinfo='percent+label',
         insidetextorientation='radial',
-        showlegend=False  
+        showlegend=False
     ))
 
     for idx, row in avg_by_age.iterrows():
@@ -166,12 +159,9 @@ with col2:
             showlegend=True
         ))
 
-    # Layout customization
     pie_fig.update_layout(
         height=320,
-        paper_bgcolor='#0e1117',
-        plot_bgcolor='#0e1117',
-        font=dict(color='white', size=13),
+        font=dict(size=13),
         margin=dict(t=40, b=40, l=40, r=40),
         legend=dict(
             orientation="v",
@@ -179,28 +169,23 @@ with col2:
             y=1,
             xanchor="right",
             x=1,
-            bgcolor='#0e1117',
-            bordercolor='white',
-            borderwidth=1,
-            font=dict(color='white')
+            borderwidth=1
         ),
         showlegend=True
     )
 
-    st.plotly_chart(pie_fig, use_container_width=True , key="Age range average" )
-    
-#creating columns and a container
+    st.plotly_chart(pie_fig, use_container_width=True, key="Age range average")
+
+# Create new container
 container2 = st.container()
 col3, col4 = st.columns(2)
 
 with col3:
     st.subheader("Average values by year")
 
-    # # Grouping by year and calculating the average percentage values
     avg_by_year = filtered_df.groupby("Year")["Value"].mean().reset_index()
-    avg_by_year = avg_by_year.sort_values(by="Year") 
+    avg_by_year = avg_by_year.sort_values(by="Year")
 
-    # Plotting the line chart
     line_fig = go.Figure()
 
     line_fig.add_trace(go.Scatter(
@@ -214,66 +199,54 @@ with col3:
 
     line_fig.update_layout(
         height=400,
-        paper_bgcolor='#0e1117',
-        plot_bgcolor='#0e1117',
-        font=dict(color='white', size=13),
+        font=dict(size=13),
         margin=dict(t=40, b=40, l=40, r=40),
         xaxis=dict(
             title="Year",
             showgrid=False,
             tickmode='array',
-            tickvals=avg_by_year["Year"],  
+            tickvals=avg_by_year["Year"]
         ),
         yaxis=dict(
             title="Average Percentage Value",
-            showgrid=True,
-            gridcolor='gray'
-        ),
+            showgrid=True
+        )
     )
 
-    st.plotly_chart(line_fig, use_container_width=True, key="line_chart_by_year")
+    st.plotly_chart(line_fig, use_container_width=True, key="line chart by year")
 
 with col4:
     st.subheader("Distribution of average values by year")
 
-    # Group by year and calculate average value
     avg_by_year = filtered_df.groupby("Year")["Value"].mean().reset_index()
     avg_by_year = avg_by_year.sort_values(by="Year")
 
-    #Plotting the histogram 
     hist_fig = go.Figure()
 
     hist_fig.add_trace(go.Bar(
         x=avg_by_year["Year"],
         y=avg_by_year["Value"],
         marker_color='deepskyblue',
-        width=4.9,  
+        width=4.9,
         name="Avg % per Year"
     ))
-    #updating the layout
+
     hist_fig.update_layout(
         height=400,
-        paper_bgcolor='#0e1117',
-        plot_bgcolor='#0e1117',
-        font=dict(color='white', size=13),
+        font=dict(size=13),
         margin=dict(t=40, b=40, l=40, r=40),
         xaxis=dict(
-            title=dict(text="Year", font=dict(color='white')),
+            title=dict(text="Year"),
             tickvals=avg_by_year["Year"],
-            tickfont=dict(color='white'),
-            linecolor='white',
-            showgrid=False
         ),
         yaxis=dict(
-            title=dict(text="Average Percentage Value", font=dict(color='white')),
-            tickfont=dict(color='white'),
-            linecolor='white',
-            gridcolor='gray'
+            title=dict(text="Average Percentage Value"),
         ),
-        bargap=0.05,       
+        bargap=0.05
     )
 
     st.plotly_chart(hist_fig, use_container_width=True, key="histogram by year")
+
 
 
 
