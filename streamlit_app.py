@@ -146,8 +146,6 @@ with col2:
     
     avg_by_age["Color"] = avg_by_age["Age range "].map(age_color_mapping).fillna("lightgray")
 
-    import plotly.graph_objects as go
-
     # Create the pie chart 
     pie_fig = go.Figure()
 
@@ -200,7 +198,7 @@ with col3:
 
     # # Grouping by year and calculating the average percentage values
     avg_by_year = filtered_df.groupby("Year")["Value"].mean().reset_index()
-    avg_by_year = avg_by_year.sort_values(by="Year")  # Sort years just in case
+    avg_by_year = avg_by_year.sort_values(by="Year") 
 
     # Plotting the line chart
     line_fig = go.Figure()
@@ -231,10 +229,55 @@ with col3:
             showgrid=True,
             gridcolor='gray'
         ),
-        showlegend=False
     )
 
     st.plotly_chart(line_fig, use_container_width=True, key="line_chart_by_year")
+
+with col4:
+    st.subheader("Distribution of average values by year")
+
+    # Group by year and calculate average value
+    avg_by_year = filtered_df.groupby("Year")["Value"].mean().reset_index()
+    avg_by_year = avg_by_year.sort_values(by="Year")
+
+    #Plotting the histogram 
+    hist_fig = go.Figure()
+
+    hist_fig.add_trace(go.Bar(
+        x=avg_by_year["Year"],
+        y=avg_by_year["Value"],
+        marker_color='deepskyblue',
+        width=4.9,  
+        name="Avg % per Year"
+    ))
+    #updating the layout
+    hist_fig.update_layout(
+        height=400,
+        paper_bgcolor='#0e1117',
+        plot_bgcolor='#0e1117',
+        font=dict(color='white', size=13),
+        margin=dict(t=40, b=40, l=40, r=40),
+        xaxis=dict(
+            title=dict(text="Year", font=dict(color='white')),
+            tickvals=avg_by_year["Year"],
+            tickfont=dict(color='white'),
+            linecolor='white',
+            showgrid=False
+        ),
+        yaxis=dict(
+            title=dict(text="Average Percentage Value", font=dict(color='white')),
+            tickfont=dict(color='white'),
+            linecolor='white',
+            gridcolor='gray'
+        ),
+        bargap=0.05,       
+    )
+
+    st.plotly_chart(hist_fig, use_container_width=True, key="histogram by year")
+
+
+
+
 
 
 
