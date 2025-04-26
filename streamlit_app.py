@@ -66,8 +66,8 @@ col1, col2 = st.columns(2)
 with col1:
     color_mapping = {
         "SEC.CMPT": 'indianred',      
-        "PRM.CMPT": 'darkseagreen',      
-        "NOED": 'lightskyblue',       
+        "PRM.CMPT": 'forestgreen',      
+        "NOED": 'royalblue',       
         "TER.CMPT": 'mediumorchid'     
     }
 
@@ -247,6 +247,65 @@ with col4:
 
     st.plotly_chart(hist_fig, use_container_width=True, key="histogram by year")
 
+# Grouped bar chart 
+# Color and label mapping
+color_mapping = {
+    "SEC.CMPT": 'indianred',
+    "PRM.CMPT": 'forestgreen',
+    "NOED": 'royalblue',
+    "TER.CMPT": 'mediumorchid'
+}
+
+legend_label_mapping = {
+    "SEC.CMPT": "Secondary education",
+    "PRM.CMPT": "Primary education",
+    "NOED": "No education",
+    "TER.CMPT": "Tertiary education"
+}
+
+# Group by Year and Indicator Code
+grouped = filtered_df.groupby(["Year", "Indicator Code"])["Value"].mean().reset_index()
+
+# Pivot table
+pivot_df = grouped.pivot(index="Year", columns="Indicator Code", values="Value").reset_index()
+
+all_years = sorted(filtered_df["Year"].unique())
+pivot_df = pivot_df.set_index("Year").reindex(all_years).reset_index()
+
+
+st.subheader("Grouped average values by year and education indicators")
+fig = go.Figure()
+
+for code, color in color_mapping.items():
+    if code in pivot_df.columns:
+        fig.add_trace(go.Bar(
+            x=pivot_df["Year"],
+            y=pivot_df[code],
+            name=legend_label_mapping[code],
+            marker_color=color
+        ))
+
+fig.update_layout(
+    barmode='group',  
+    height=500,
+    font=dict(size=13),
+    xaxis=dict(
+        title="Year",
+        tickmode='array',
+        tickvals=pivot_df["Year"],  
+    ),
+    yaxis=dict(title="Average Percentage Value"),
+    legend=dict(
+        title="Education Level",
+        x=1,
+        xanchor="left",
+        y=1,
+        bgcolor="rgba(0,0,0,0)",  
+    ),
+    margin=dict(t=40, b=40, l=40, r=40)
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 
 
