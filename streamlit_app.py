@@ -15,7 +15,7 @@ st.title("Education indicators for Sri Lanka ")
 
 df= pd.read_csv("education indicators.csv")
 
-st.sidebar.header("Choose filters")
+st.sidebar.header("Choose Filters")
 # Create for Age range 
 age_range = st.sidebar.multiselect("Select an age range", df["Age range "].unique())
 if not age_range:
@@ -24,7 +24,7 @@ else:
     df2 = df[df["Age range "].isin(age_range)]
 
 #Create for year
-year = st.sidebar.multiselect("Select an year", df2["Year"].unique())
+year = st.sidebar.multiselect("Pick a year", df2["Year"].unique())
 if not year:
     df3 = df2.copy()
 else:
@@ -121,6 +121,11 @@ with col1:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+with st.expander("View data by the value and indicator"):
+        st.write(avg_by_code[["Indicator Code", "Value"]])
+        csv = avg_by_code[["Indicator Code", "Value"]].to_csv(index=False).encode('utf-8')
+        st.download_button("Download Indicator Data", data=csv, file_name="indicator_data.csv", mime="text/csv")
 
 with col2:
     st.subheader("Average values by age range")
@@ -306,6 +311,16 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+
+
+
 
 
 
