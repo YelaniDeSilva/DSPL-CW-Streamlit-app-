@@ -312,6 +312,12 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+#Added an option to view and download the average percentages grouped by year and indicator
+with st.expander("View grouped data by year and indicator"):
+    st.write(pivot_df)
+    csv = pivot_df.to_csv(index=False).encode('utf-8')
+    st.download_button("Download Grouped Data", data=csv, file_name="grouped_year_indicator_data.csv", mime="text/csv")
+
 
 
 
