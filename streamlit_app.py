@@ -121,7 +121,7 @@ with col1:
     )
 
     st.plotly_chart(fig, use_container_width=True)
-
+#Download the data 
 with st.expander("View data by the value and indicator"):
         st.write(avg_by_code[["Indicator Code", "Value"]])
         csv = avg_by_code[["Indicator Code", "Value"]].to_csv(index=False).encode('utf-8')
